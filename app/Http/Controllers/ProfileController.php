@@ -30,11 +30,9 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
-
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
-
         $request->user()->save();
 
         return Redirect::route('profile.edit');
@@ -59,5 +57,26 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Update the user's profile photo.
+     */
+    public function photo(Request $request): RedirectResponse
+    {
+        if ($request->hasFile('photo')) {
+            if (file_exists($request->user()->photo)) {
+                unlink($request->user()->photo);
+            }
+
+            $validated = $request->validate([
+                'photo' => ['required', 'image', 'mimes:png,jpg,jpeg', 'max:2048'],
+            ]);
+
+            $validated['photo'] = 'storage/' . $request->file('photo')->store('profile-photos');
+            $request->user()->update($validated);
+        }
+
+        return back();
     }
 }

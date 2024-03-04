@@ -10,6 +10,7 @@
         "laravel/breeze": "^2.0@dev",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
+        "laravel/scout": "^10.8",
         "laravel/tinker": "^2.9",
         "tightenco/ziggy": "^1.0"
     },
